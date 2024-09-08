@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIVIWARE広場</title>
+    {% load static %}
+    <style>
+        /* CSSはそのまま */
+        :root {
+            --background: hsl(0, 0%, 100%);
+            --foreground: hsl(240, 10%, 3.9%);
+            --card: hsl(0, 0%, 100%);
+            --card-foreground: hsl(240, 10%, 3.9%);
+            --popover: hsl(0, 0%, 100%);
+            --popover-foreground: hsl(240, 10%, 3.9%);
+            --primary: hsl(240, 5.9%, 10%);
+            --primary-foreground: hsl(0, 0%, 98%);
+            --secondary: hsl(240, 4.8%, 95.9%);
+            --secondary-foreground: hsl(240, 5.9%, 10%);
+            --muted: hsl(240, 4.8%, 95.9%);
+            --muted-foreground: hsl(240, 3.8%, 45%);
+            --accent: hsl(240, 4.8%, 95.9%);
+            --accent-foreground: hsl(240, 5.9%, 10%);
+            --destructive: hsl(0, 72%, 51%);
+            --destructive-foreground: hsl(0, 0%, 98%);
+            --border: hsl(240, 5.9%, 90%);
+            --input: hsl(240, 5.9%, 90%);
+            --ring: hsl(240, 5.9%, 10%);
+            --chart-1: hsl(173, 58%, 39%);
+            --chart-2: hsl(12, 76%, 61%);
+            --chart-3: hsl(197, 37%, 24%);
+            --chart-4: hsl(43, 74%, 66%);
+            --chart-5: hsl(27, 87%, 67%);
+            --radius: 0.5rem;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #86efac, #6ee7b7);
+        }
+
+        .container {
+            background-color: var(--card);
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #fbcfe8;
+            padding: 10px;
+            border-radius: var(--radius);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-top: 20px;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--input);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+
+        .photo-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 150px;
+            border: 1px solid var(--input);
+            border-radius: var(--radius);
+            margin-bottom: 15px;
+        }
+
+        .photo-button svg {
+            width: 50px;
+            height: 50px;
+            stroke: var(--foreground);
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .footer button {
+            background-color: var(--card);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer button svg {
+            width: 30px;
+            height: 30px;
+        }
+        .menu {
+            width: 40px;
+            height: 40px;
+            background-color: #333;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .menu-items {
+            position: absolute;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            display: none;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+            text-decoration: none;
+            color: black;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .menu-item img {
+            margin-right: 10px;
+            width: 24px;
+            height: 24px;
+        }
+        .menu-items.show {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>VIVIWARE広場</h1>
+            <button>&times;</button>
+        </div>
+        <div class="form-group">
+            <label for="title">題名</label>
+            <input type="text" id="title" placeholder="題名">
+        </div>
+        <div class="photo-button">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path>
+                <circle cx="12" cy="13" r="3"></circle>
+            </svg>
+        </div>
+        <div class="form-group">
+            <label for="description">説明</label>
+            <textarea id="description" rows="4" placeholder="説明"></textarea>
+        </div>
+        <div class="footer">
+            <button>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <path d="M17.5 21H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+                    <path d="M22 10a3 3 0 0 0-3-3h-2.207a5.502 5.502 0 0 0-10.702.5"></path>
+                </svg>
+            </button>
+            <button>
+                <div class="menu" onclick="toggleMenu()" aria-label="メニュー">≡</div>
+                <div class="menu-items" id="menuItems">
+                    <div class="menu-item">
+                        <img src="{% static 'community/home.png' %}" alt="ホーム">
+                        <a href="http://127.0.0.1:8000/home/">ホーム</a>
+                    </div>
+                    <div class="menu-item">
+                        <img src="{% static 'community/videoicon.png' %}" alt="製作動画">
+                        <a href="#">製作動画</a>
+                    </div>
+                    <div class="menu-item">
+                        <img src="{% static 'community/toukouicon.png' %}" alt="投稿">
+                        <a href="http://127.0.0.1:8000/community/hiroba/">投稿</a>
+                    </div>
+                    <div class="menu-item">
+                        <img src="{% static 'community/usericon.png' %}" alt="ユーザー">
+                        <a href="http://127.0.0.1:8000/user_profile/">ユーザー</a>
+                    </div>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const menuItems = document.getElementById("menuItems");
+            menuItems.classList.toggle("show");
+        }
+    </script>
+</body>
+</html>

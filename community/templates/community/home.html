@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIVIWARECell</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #d0f0c0;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
+            position: relative;
+            overflow: hidden;
+            background-color: #d0f0c0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            background-color: #f0f0f0;
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .notice {
+            margin: 20px;
+            text-align: center;
+        }
+        .notice h2 {
+            font-size: 20px;
+        }
+        .url-list {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        .news {
+            margin: 20px;
+            background-color: #e0e0e0;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .menu {
+            position: relative;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background-color: #333;
+            border-radius: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .menu-items {
+            position: absolute;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            display: none;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .menu-item {
+            display: flex;
+            align-items: right;
+            width: 100%;
+            padding: 10px;
+            text-decoration: none;
+            color: black;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .menu-item img {
+            margin-right: 10px;
+            width: 24px;
+            height: 24px;
+        }
+        .menu-items.show {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    {% load static %}
+    <div class="container">
+        <div class="header">VIVIWARECell</div>
+        <div class="notice">
+            <h2>お知らせ</h2>
+            <div class="url-list">
+                {% for announcement in announcements %}
+                    <a href="#">{{ announcement.title }}</a>
+                    <br>
+                {% empty %}
+                <a href="https://viviware.com/">VIVIWAREホームページへ</a>
+                <br>
+                <a href="https://viviware.com/news/">お知らせ一覧</a>
+                <br>
+                <a href="https://viviware.com/contact/">お問い合わせ</a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="news">
+            ニュース
+        </div>
+        <div class="menu" onclick="toggleMenu()" aria-label="メニュー">≡</div>
+        <div class="menu-items" id="menuItems">
+            <div class="menu-item">
+                <img src="{% static 'community/home.png' %}" alt="ホーム">
+                <a href="http://127.0.0.1:8000/home/">ホーム</a>
+            </div>
+            <div class="menu-item">
+                <img src="{% static 'community/videoicon.png' %}" alt="製作動画">
+                <a href="#">製作動画</a>
+            </div>
+            <div class="menu-item">
+                <img src="{% static 'community/toukouicon.png' %}" alt="投稿">
+                <a href="http://127.0.0.1:8000/community/hiroba/">投稿</a>
+            </div>
+            <div class="menu-item">
+                <img src="{% static 'community/usericon.png' %}" alt="ユーザー">
+                <a href="http://127.0.0.1:8000/user_profile/">ユーザー</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById("menuItems");
+            menu.classList.toggle("show");
+        }
+    </script>
+</body>
+</html>
