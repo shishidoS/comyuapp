@@ -1,0 +1,153 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ユーザー設定</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            width: 375px;
+            height: 667px;
+            border: 16px solid #000;
+            border-radius: 36px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: relative; /* メニュー表示に関する改善点 */
+        }
+        .header {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .label {
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+        .input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .menu {
+            position: relative;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background-color: #333;
+            border-radius: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 10; /* メニューを前面に表示 */
+        }
+        .menu-items {
+            position: absolute;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            display: none;
+            flex-direction: column;
+            align-items: flex-start;
+            z-index: 9; /* メニュー項目がメニューアイコンの下に表示されないように */
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+            text-decoration: none;
+            color: black;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .menu-item img {
+            margin-right: 10px;
+            width: 24px;
+            height: 24px;
+        }
+        .menu-items a:last-child {
+            border-bottom: none;
+        }
+        .menu-items.show {
+            display: flex;
+        }
+    </style>
+    <script>
+        function toggleMenu() {
+            const menuItems = document.getElementById('menuItems');
+            menuItems.classList.toggle('show');
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">名前（ニックネームにしてね！）</div>
+        <div class="label">ユーザー名</div>
+        <input type="text" class="input" placeholder="ユーザー名を入力">
+        <div class="label">製品ID（変更不可）</div>
+        <input type="text" class="input" placeholder="製品ID" disabled>
+        <div class="label">出身地</div>
+        <input type="text" class="input" placeholder="出身地を入力">
+        <div class="label">学年</div>
+        <input type="text" class="input" placeholder="学年を入力">
+        <div class="label">パスワード変更</div>
+        <input type="password" class="input" placeholder="新しいパスワードを入力">
+        <button class="button">保存</button>
+        <div class="menu" onclick="toggleMenu()" aria-label="メニュー">≡</div>
+        <div class="menu-items" id="menuItems">
+            <a class="menu-item" href="#">
+                <img src="{% static 'community/home.png' %}" alt="ホーム">
+                <a href="http://127.0.0.1:8000/home/">ホーム</a>
+            </a>
+            <a class="menu-item" href="#">
+                <img src="{% static 'community/videoicon.png' %}" alt="製作動画">
+                製作動画
+            </a>
+            <a class="menu-item" href="#">
+                <img src="{% static 'community/toukouicon.png' %}" alt="投稿">
+                投稿
+            </a>
+            <a class="menu-item" href="http://127.0.0.1:8000/user_profile/">
+                <img src="{% static 'community/usericon.png' %}" alt="ユーザー">
+                <a href="http://127.0.0.1:8000/user_profile/">ユーザー</a>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

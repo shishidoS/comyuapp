@@ -1,0 +1,352 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIVIWARE広場</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #e8f5e9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .phone {
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            background-color: #fff;
+            border-radius: 30px;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .header {
+            background-color: #ba68c8;
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            border-radius: 20px 20px 0 0;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .content {
+            margin-top: 60px;
+            overflow-y: auto;
+            scrollbar-width: none; /* スクロールバーを非表示 */
+            height: calc(100% - 120px);
+            width: 100%;
+        }
+        .post {
+            background-color: white;
+            width: 90%;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .user-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background-color: #4CAF50;
+        }
+        .post-header span {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .post-image {
+            width: 100%;
+            margin: 10px 0;
+            height: 200px;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+        }
+        .post-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .post-description {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .post-comment input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .edit-icon {
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border-radius: 50%;
+            padding: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+        .menu {
+            width: 40px;
+            height: 40px;
+            background-color: #333;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .heart-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: #888;
+            transition: color 0.3s;
+        }
+        .heart-btn.active {
+            color: #ff4081;
+        }
+        .menu-items {
+            position: absolute;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            display: none;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+            text-decoration: none;
+            color: black;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .menu-item img {
+            margin-right: 10px;
+            width: 24px;
+            height: 24px;
+        }
+        .menu-items.show {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone">
+        <div class="header">VIVIWARE広場</div>
+        <div class="content">
+            <div class="post">
+                <div class="post-header">
+                    <div class="user-info">
+                        <div class="user-icon"></div>
+                        <span>うどんくん</span>
+                    </div>
+                    <button class="heart-btn" onclick="toggleHeart(this)">❤</button>
+                </div>
+                <div class="post-image">
+                    <img src="" alt="Post Image" class="post-img">
+                </div>
+                <div class="post-description">説明</div>
+                <div class="post-comment">
+                    <input type="text" placeholder="ここにコメント" onchange="saveComment(this)">
+                </div>
+            </div>
+
+            <div class="post">
+                <div class="post-header">
+                    <div class="user-info">
+                        <div class="user-icon" style="background-color: #FF5722;"></div>
+                        <span>おそばくん</span>
+                    </div>
+                    <button class="heart-btn" onclick="toggleHeart(this)">❤</button>
+                </div>
+                <div class="post-image">
+                    <img src="" alt="Post Image" class="post-img">
+                </div>
+                <div class="post-description">説明</div>
+                <div class="post-comment">
+                    <input type="text" placeholder="ここにコメント" onchange="saveComment(this)">
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <a class="edit-icon" href="http://127.0.0.1:8000/community/create_post/
+            ">✏️</a>
+            
+            <div class="menu" onclick="toggleMenu()">≡</div>
+        </div>
+        <div class="menu-items" id="menuItems">
+            <div class="menu-item">
+                <img src="{% static 'community/home.png' %}" alt="ホーム">
+                <a href="http://127.0.0.1:8000/home/">ホーム</a>
+            </div>
+            <div class="menu-item">
+                <img src="{% static 'community/videoicon.png' %}" alt="製作動画">
+                <a href="#">製作動画</a>
+            </div>
+            <div class="menu-item">
+                <img src="{% static 'community/toukouicon.png' %}" alt="投稿">
+                <a href="http://127.0.0.1:8000/community/hiroba/">投稿</a>
+            </div>
+            <div class="menu-item">
+                <img src="{% static 'community/usericon.png' %}" alt="ユーザー">
+                <a href="http://127.0.0.1:8000/user_profile/">ユーザー</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleHeart(element) {
+        element.classList.toggle('active');
+    }
+
+    function toggleMenu() {
+        const menuItems = document.getElementById('menuItems');
+        menuItems.classList.toggle('show');
+    }
+
+    function saveComment(input) {
+        const comment = input.value;
+        if (comment) {
+            fetch('/save_comment/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // DjangoのCSRFトークン
+                },
+                body: JSON.stringify({ comment: comment })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('コメントが保存されました:', data);
+                input.value = '';  // コメントが保存された後に入力欄をクリア
+            })
+            .catch(error => console.error('エラー:', error));
+        }
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function uploadImage(event, imgElement) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imgElement.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    document.querySelectorAll('.post-image').forEach(postImage => {
+        const imgElement = postImage.querySelector('img');
+        const inputElement = document.createElement('input');
+        inputElement.type = 'file';
+        inputElement.accept = 'image/*';
+        inputElement.style.display = 'none';
+        inputElement.addEventListener('change', (event) => uploadImage(event, imgElement));
+        postImage.appendChild(inputElement);
+        postImage.addEventListener('click', () => inputElement.click());
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/get_posts/')
+            .then(response => response.json())
+            .then(posts => {
+                const content = document.querySelector('.content');
+                content.innerHTML = ''; // 既存の投稿をクリアする
+                posts.forEach(post => {
+                    const postElement = document.createElement('div');
+                    postElement.classList.add('post');
+                    postElement.innerHTML = `
+                        <div class="post-header">
+                            <div class="user-info">
+                                <div class="user-icon"></div>
+                                <span>${post.user}</span>
+                            </div>
+                            <button class="heart-btn" onclick="toggleHeart(this)">❤</button>
+                        </div>
+                        <div class="post-image">
+                            <img src="${post.image_url}" alt="Post Image" class="post-img">
+                        </div>
+                        <div class="post-description">${post.description}</div>
+                        <div class="post-comment">
+                            <input type="text" placeholder="ここにコメント" onchange="saveComment(this)">
+                        </div>
+                    `;
+                    content.appendChild(postElement);
+                });
+            })
+            .catch(error => console.error('エラー:', error));
+    });
+    </script>
+    
+</body>
+</html>
