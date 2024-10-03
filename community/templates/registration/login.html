@@ -2,14 +2,63 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>ログイン</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIVIWARECell ログイン</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 375px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            margin: 10px;
+        }
+        .header {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <h2>ログイン</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">ログイン</button>
-    </form>
+    <div class="container">
+        <div class="header">VIVIWARECell</div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="input">製品ID  {{ form.username }}</div>
+            <div class="input">パスワード  {{ form.password }}</div>
+            <button type="submit" class="submit-btn">ログイン</button>
+        </form>
+    </div>
 </body>
 </html>

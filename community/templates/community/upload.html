@@ -161,6 +161,22 @@
         .menu-items.show {
             display: flex;
         }
+        .post-image {
+            width: 100%;
+            margin: 10px 0;
+            height: 200px;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+        }
+        .post-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
@@ -174,10 +190,9 @@
             <input type="text" id="title" placeholder="題名">
         </div>
         <div class="photo-button">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path>
-                <circle cx="12" cy="13" r="3"></circle>
-            </svg>
+            <div class="post-image">
+                <img src="" alt="Post Image" class="post-img">
+            </div>
         </div>
         <div class="form-group">
             <label for="description">説明</label>
@@ -195,11 +210,11 @@
                 <div class="menu-items" id="menuItems">
                     <div class="menu-item">
                         <img src="{% static 'community/home.png' %}" alt="ホーム">
-                        <a href="http://127.0.0.1:8000/home/">ホーム</a>
+                        <a href="http://127.0.0.1:8000/community/">ホーム</a>
                     </div>
                     <div class="menu-item">
                         <img src="{% static 'community/videoicon.png' %}" alt="製作動画">
-                        <a href="#">製作動画</a>
+                        <a href="http://127.0.0.1:8000/community/videos/">製作動画</a>
                     </div>
                     <div class="menu-item">
                         <img src="{% static 'community/toukouicon.png' %}" alt="投稿">
@@ -207,7 +222,7 @@
                     </div>
                     <div class="menu-item">
                         <img src="{% static 'community/usericon.png' %}" alt="ユーザー">
-                        <a href="http://127.0.0.1:8000/user_profile/">ユーザー</a>
+                        <a href="http://127.0.0.1:8000/community/user_profile/">ユーザー</a>
                     </div>
                 </div>
             </button>
@@ -215,10 +230,103 @@
     </div>
 
     <script>
-        function toggleMenu() {
-            const menuItems = document.getElementById("menuItems");
-            menuItems.classList.toggle("show");
+        function toggleHeart(element) {
+        element.classList.toggle('active');
+    }
+
+    function toggleMenu() {
+        const menuItems = document.getElementById('menuItems');
+        menuItems.classList.toggle('show');
+    }
+
+    function saveComment(input) {
+        const comment = input.value;
+        if (comment) {
+            fetch('/save_comment/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // DjangoのCSRFトークン
+                },
+                body: JSON.stringify({ comment: comment })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('コメントが保存されました:', data);
+                input.value = '';  // コメントが保存された後に入力欄をクリア
+            })
+            .catch(error => console.error('エラー:', error));
         }
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function uploadImage(event, imgElement) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imgElement.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    document.querySelectorAll('.post-image').forEach(postImage => {
+        const imgElement = postImage.querySelector('img');
+        const inputElement = document.createElement('input');
+        inputElement.type = 'file';
+        inputElement.accept = 'image/*';
+        inputElement.style.display = 'none';
+        inputElement.addEventListener('change', (event) => uploadImage(event, imgElement));
+        postImage.appendChild(inputElement);
+        postImage.addEventListener('click', () => inputElement.click());
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/get_posts/')
+            .then(response => response.json())
+            .then(posts => {
+                const content = document.querySelector('.content');
+                content.innerHTML = ''; // 既存の投稿をクリアする
+                posts.forEach(post => {
+                    const postElement = document.createElement('div');
+                    postElement.classList.add('post');
+                    postElement.innerHTML = `
+                        <div class="post-header">
+                            <div class="user-info">
+                                <div class="user-icon"></div>
+                                <span>${post.user}</span>
+                            </div>
+                            <button class="heart-btn" onclick="toggleHeart(this)">❤</button>
+                        </div>
+                        <div class="post-image">
+                            <img src="${post.image_url}" alt="Post Image" class="post-img">
+                        </div>
+                        <div class="post-description">${post.description}</div>
+                        <div class="post-comment">
+                            <input type="text" placeholder="ここにコメント" onchange="saveComment(this)">
+                        </div>
+                    `;
+                    content.appendChild(postElement);
+                });
+            })
+            .catch(error => console.error('エラー:', error));
+    });
+        
     </script>
 </body>
 </html>
