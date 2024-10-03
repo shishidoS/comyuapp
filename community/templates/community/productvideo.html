@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ video.title }} - ビデオ詳細</title>
+    {% load static %}
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+        }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 アスペクト比 */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+        }
+
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .file-section {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        .download-link {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+        .download-link:hover {
+            text-decoration: underline;
+        }
+        .menu {
+            position: fixed;
+            bottom: 20px; /* 下からの距離を調整 */
+            right: 20px;  /* 画面右下に固定 */
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background-color: #333;
+            border-radius: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .menu-items {
+            position: absolute;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            display: none;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .menu-item {
+            display: flex;
+            align-items: right;
+            width: 100%;
+            padding: 10px;
+            text-decoration: none;
+            color: black;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .menu-item img {
+            margin-right: 10px;
+            width: 24px;
+            height: 24px;
+        }
+        .menu-items.show {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <div class="video-container">
+        <video controls>
+            <source src="{{ video.video_file.url }}" type="video/mp4">
+            お使いのブラウザは動画タグに対応していません。
+        </video>
+    </div>
+
+    <h2>{{ video.title }}</h2>
+    <p>{{ video.description }}</p>
+
+    <h2>プログラム説明文</h2>
+    <p>{{ video.description }}</p>
+
+
+    <div class="file-section">
+        <svg class="file-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#007bff">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+        </svg>
+        <a href="{{ video.completprogram.url}}" download class="download-link">プログラムファイルをダウンロード</a>
+    </div>
+
+    <div class="menu" onclick="toggleMenu()" aria-label="メニュー">≡</div>
+        <div class="menu-items" id="menuItems">
+            <div class="menu-item">
+                <img src="{% static 'community/home.png' %}" alt="ホーム">
+                <a href="http://127.0.0.1:8000/community/">ホーム</a>
+            </div>
+            <div class="menu-item">
+                <img src="{% static 'community/videoicon.png' %}" alt="製作動画">
+                <a href="http://127.0.0.1:8000/community/videos/">製作動画</a>
+            </div>
+            <div class="menu-item">
+                <img src="{% static 'community/toukouicon.png' %}" alt="投稿">
+                <a href="http://127.0.0.1:8000/community/hiroba/">投稿</a>
+            </div>
+            <div class="menu-item">
+                <img src="{% static 'community/usericon.png' %}" alt="ユーザー">
+                <a href="http://127.0.0.1:8000/community/user_profile/">ユーザー</a>
+            </div>
+        </div>
+        <script>
+            function toggleMenu() {
+                var menu = document.getElementById("menuItems");
+                menu.classList.toggle("show");
+            }
+        </script>
+</body>
+</html>

@@ -1,19 +1,33 @@
-#community/views.pyです
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
-from .models import Announcement, Post, UserProfile
-from .forms import PostForm
-from django.http import JsonResponse
-from .models import Post, Videos
-from django.shortcuts import render, redirect
-from .models import Post, Videos  # Videoモデルをインポート
-from .forms import PostForm, VideoForm  # VideoFormをインポート
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from .models import Announcement, Post, UserProfile, Videos
+from .forms import PostForm, VideoForm
+from .forms import UserProfileForm
+from .models import UserProfile
+from .models import Videos
 
+def productvideo(request):
+    video_id = request.GET.get('video_id')
+    video = get_object_or_404(Videos, id=video_id)
+    return render(request, 'community/productvideo.html', {'video': video})
+
+@login_required
+def user_profile(request):
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            return redirect('user_profile')  # 保存後、同じページにリダイレクト
+    else:
+        form = UserProfileForm(instance=user_profile)
+
+    return render(request, 'community/user_profile.html', {'form': form})
 def signup(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -34,7 +48,6 @@ def home(request):
     posts = Post.objects.all()
     return render(request, 'community/home.html', {'announcements': announcements, 'posts': posts})
 
-
 @login_required
 def user_profile(request):
     profile, created = UserProfile.objects.get_or_create(user=request.user)
@@ -47,9 +60,6 @@ def hiroba(request):
 def upload(request):
     # ここにファイルアップロード処理を実装
     return render(request, 'community/upload.html')
-def get_posts(request):
-    posts = list(Post.objects.values('user', 'image_url', 'description'))
-    return JsonResponse(posts, safe=False)
 
 def get_posts(request):
     posts = Post.objects.all().values('user', 'image_url', 'description')
@@ -58,15 +68,11 @@ def get_posts(request):
 
 @login_required
 def create_post(request):
-    print('Received request method:', request.method)  # デバッグ用
-
     if request.method == 'POST':
         user = request.POST.get('user')
         title = request.POST.get('title')
         description = request.POST.get('description')
         image = request.FILES.get('image')
-        
-        print('Received data:', user, title, description, image)  # デバッグ用
 
         try:
             post = Post.objects.create(
@@ -77,17 +83,18 @@ def create_post(request):
             )
             return JsonResponse({'success': True, 'message': '投稿が成功しました。'})
         except Exception as e:
-            print('Error:', str(e))  # デバッグ用
             return JsonResponse({'success': False, 'message': str(e)})
-    
+
     return JsonResponse({'success': False, 'message': '不正なリクエストです。'})
+
 def video_list(request):
-    videos = Videos.objects.all().order_by('-created_at')
-    return render(request, 'community/video_list.html', {'videos': videos})
+    videos = Videos.objects.all().order_by('-id')  # 'created_at'がない場合は'id'などで並べ替え
+    return render(request, 'community/videos.html', {'videos': videos})
 
 def post_list(request):
     posts = Post.objects.all()  # 例として全てのポストを取得
     return render(request, 'community/post_list.html', {'posts': posts})
+
 @login_required
 def upload_video(request):
     if request.method == 'POST':
@@ -98,3 +105,14 @@ def upload_video(request):
     else:
         form = VideoForm()
     return render(request, 'community/upload.html', {'form': form})
+
+def login_view(request):
+    if request.method == "POST":
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'community/login.html', {'form': form})

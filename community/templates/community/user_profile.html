@@ -23,7 +23,7 @@
             background-color: white;
             padding: 20px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            position: relative; /* メニュー表示に関する改善点 */
+            position: relative;
         }
         .header {
             text-align: center;
@@ -71,7 +71,7 @@
             color: white;
             font-size: 24px;
             cursor: pointer;
-            z-index: 10; /* メニューを前面に表示 */
+            z-index: 10;
         }
         .menu-items {
             position: absolute;
@@ -85,7 +85,7 @@
             display: none;
             flex-direction: column;
             align-items: flex-start;
-            z-index: 9; /* メニュー項目がメニューアイコンの下に表示されないように */
+            z-index: 9;
         }
         .menu-item {
             display: flex;
@@ -118,35 +118,45 @@
 <body>
     <div class="container">
         <div class="header">名前（ニックネームにしてね！）</div>
-        <div class="label">ユーザー名</div>
-        <input type="text" class="input" placeholder="ユーザー名を入力">
-        <div class="label">製品ID（変更不可）</div>
-        <input type="text" class="input" placeholder="製品ID" disabled>
-        <div class="label">出身地</div>
-        <input type="text" class="input" placeholder="出身地を入力">
-        <div class="label">学年</div>
-        <input type="text" class="input" placeholder="学年を入力">
-        <div class="label">パスワード変更</div>
-        <input type="password" class="input" placeholder="新しいパスワードを入力">
-        <button class="button">保存</button>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="label">ユーザー名</div>
+            <input type="text" class="input" value="{{ form.nickname.value }}" name="nickname" placeholder="ユーザー名を入力">
+
+            <div class="label">製品ID（変更不可）</div>
+            <input type="text" class="input" value="{{ request.user.id }}" disabled>
+
+            <div class="label">出身地</div>
+            <input type="text" class="input" value="{{ form.hometown.value }}" name="hometown" placeholder="出身地を入力">
+
+            <div class="label">学年</div>
+            <input type="text" class="input" value="{{ form.grade.value }}" name="grade" placeholder="学年を入力">
+
+            <div class="label">パスワード変更</div>
+            <input type="password" class="input" name="password" placeholder="新しいパスワードを入力">
+
+            <button class="button" type="submit">保存</button>
+        </form>
+
         <div class="menu" onclick="toggleMenu()" aria-label="メニュー">≡</div>
         <div class="menu-items" id="menuItems">
-            <a class="menu-item" href="#">
+            <div class="menu-item">
                 <img src="{% static 'community/home.png' %}" alt="ホーム">
-                <a href="http://127.0.0.1:8000/home/">ホーム</a>
-            </a>
-            <a class="menu-item" href="#">
+                <a href="http://127.0.0.1:8000/community/">ホーム</a>
+            </div>
+            <div class="menu-item">
                 <img src="{% static 'community/videoicon.png' %}" alt="製作動画">
-                製作動画
-            </a>
-            <a class="menu-item" href="#">
+                <a href="http://127.0.0.1:8000/community/videos/">製作動画</a>
+            </div>
+            <div class="menu-item">
                 <img src="{% static 'community/toukouicon.png' %}" alt="投稿">
-                投稿
-            </a>
-            <a class="menu-item" href="http://127.0.0.1:8000/user_profile/">
+                <a href="http://127.0.0.1:8000/community/hiroba/">投稿</a>
+            </div>
+            <div class="menu-item">
                 <img src="{% static 'community/usericon.png' %}" alt="ユーザー">
-                <a href="http://127.0.0.1:8000/user_profile/">ユーザー</a>
-            </a>
+                <a href="http://127.0.0.1:8000/community/user_profile/">ユーザー</a>
+            </div>
         </div>
     </div>
 </body>

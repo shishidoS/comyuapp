@@ -1,5 +1,6 @@
 from django import forms
 from .models import Post, Videos
+from .models import UserProfile
 
 class PostForm(forms.ModelForm):
     class Meta:
@@ -9,4 +10,9 @@ class PostForm(forms.ModelForm):
 class VideoForm(forms.ModelForm):
     class Meta:
         model = Videos
-        fields = ['title', 'video_file', 'description']
+        fields = ['title', 'video_file', 'description', 'thumbnail']
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['nickname', 'hometown', 'grade']

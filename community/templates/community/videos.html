@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>動画一覧</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #F9F9F9;
+        }
+        header {
+            background-color: white;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .logo {
+            color: red;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .video-item {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .video-thumbnail {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+        }
+        .video-info {
+            padding: 10px;
+        }
+        .video-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-decoration: none;
+        }
+        .menu {
+            position: fixed;
+            bottom: 20px; /* 下からの距離を調整 */
+            right: 20px;  /* 画面右下に固定 */
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background-color: #333;
+            border-radius: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .menu-items {
+            position: absolute;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            display: none;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .menu-item {
+            display: flex;
+            align-items: right;
+            width: 100%;
+            padding: 10px;
+            text-decoration: none;
+            color: black;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .menu-item img {
+            margin-right: 10px;
+            width: 24px;
+            height: 24px;
+        }
+        .menu-items.show {
+            display: flex;
+        }
+        .video-views {
+    display: -webkit-box; /* ベンダープレフィックスを追加 */
+    -webkit-box-orient: vertical; /* ベンダープレフィックスを追加 */
+    -webkit-line-clamp: 2; /* 行数を2に制限 */
+    overflow: hidden; /* 溢れた部分を隠す */
+    text-overflow: ellipsis; /* 溢れた部分を省略記号で表示 */
+    display: box; /* 標準のプロパティ */
+    box-orient: vertical; /* 標準のプロパティ */
+    line-clamp: 2; /* 標準のプロパティ（サポートされているブラウザ用） */
+}
+
+
+    </style>
+    {% load static %} 
+</head>
+<body>
+    <header>
+        <div class="logo">VIVIWARE</div>
+    </header>
+    <div class="video-grid">
+        {% for video in videos %}
+        <div class="video-item">
+            {% if video.thumbnail %}
+                <img src="{{ video.thumbnail.url }}" alt="{{ video.title }}" class="video-thumbnail" width="100%" height="140">
+            {% else %}
+                <img src="{% static 'path/to/default_thumbnail.png' %}" alt="Default Thumbnail" class="video-thumbnail" width="100%" height="140">
+            {% endif %}
+            <div class="video-info">
+                <a class="video-title" href="{% url 'productvideo' %}?video_id={{ video.id }}">{{ video.title }}</a>
+                <div class="video-views">{{ video.description }}</div>
+                <p class="video-views">難易度:☆</p>
+            </div>
+        </div>
+        
+        
+        {% endfor %}
+    </div>
+    <div class="menu" onclick="toggleMenu()" aria-label="メニュー">≡</div>
+        <div class="menu-items" id="menuItems">
+            <div class="menu-item">
+                <img src="{% static 'community/home.png' %}" alt="ホーム">
+                <a href="http://127.0.0.1:8000/community/">ホーム</a>
+            </div>
+            <div class="menu-item">
+                <img src="{% static 'community/videoicon.png' %}" alt="製作動画">
+                <a href="http://127.0.0.1:8000/community/videos/">製作動画</a>
+            </div>
+            <div class="menu-item">
+                <img src="{% static 'community/toukouicon.png' %}" alt="投稿">
+                <a href="http://127.0.0.1:8000/community/hiroba/">投稿</a>
+            </div>
+            <div class="menu-item">
+                <img src="{% static 'community/usericon.png' %}" alt="ユーザー">
+                <a href="http://127.0.0.1:8000/community/user_profile/">ユーザー</a>
+            </div>
+        </div>
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById("menuItems");
+            menu.classList.toggle("show");
+        }
+    </script>
+</body>
+</html>
