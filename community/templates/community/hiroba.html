@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -188,63 +187,70 @@
     <div class="phone">
         <div class="header">VIVIWARE広場</div>
         <div class="content">
+            <!-- 投稿のループを開始 -->
+            {% for post in posts %}
             <div class="post">
                 <div class="post-header">
                     <div class="user-info">
-                        <div class="user-icon"></div>
-                        <span>うどんくん</span>
+                        <div class="user-icon" style="background-color: #4CAF50;"></div>
+                        <span>
+                            {% if post.user.profile.nickname %}
+                                {{ post.user.profile.nickname }}
+                            {% else %}
+                                {{ post.user.username }}
+                            {% endif %}
+                        </span>
                     </div>
                     <button class="heart-btn" onclick="toggleHeart(this)">❤</button>
                 </div>
-                <div class="post-image">
-                    <img src="" alt="Post Image" class="post-img">
+                <div class="post-title">  <!-- タイトルを表示 -->
+                    <h2>{{ post.title }}</h2>
                 </div>
-                <div class="post-description">説明</div>
+                <div class="post-image">
+                    {% if post.image %}
+                    <img src="{{ post.image.url }}" alt="Post Image" class="post-img">
+                    {% else %}
+                    <div class="post-img">画像がありません</div>
+                    {% endif %}
+                </div>
+                <div class="post-description">
+                    {% if post.description|length > 20 %}
+                        <span class="description-preview">{{ post.description|slice:":20" }}{% if post.description|length > 20 %}...{% endif %}</span>
+                        <button class="toggle-description" onclick="toggleDescription(this)">展開</button>
+                        <span class="description-full" style="display:none;">{{ post.description }}</span>
+                    {% else %}
+                        {{ post.description }}
+                    {% endif %}
+                </div>
+                
                 <div class="post-comment">
                     <input type="text" placeholder="ここにコメント" onchange="saveComment(this)">
                 </div>
             </div>
-
-            <div class="post">
-                <div class="post-header">
-                    <div class="user-info">
-                        <div class="user-icon" style="background-color: #FF5722;"></div>
-                        <span>おそばくん</span>
-                    </div>
-                    <button class="heart-btn" onclick="toggleHeart(this)">❤</button>
-                </div>
-                <div class="post-image">
-                    <img src="" alt="Post Image" class="post-img">
-                </div>
-                <div class="post-description">説明</div>
-                <div class="post-comment">
-                    <input type="text" placeholder="ここにコメント" onchange="saveComment(this)">
-                </div>
-            </div>
+            {% endfor %}
+            <!-- ループ終了 -->
         </div>
-
+        
         <div class="footer">
-            <a class="edit-icon" href="http://127.0.0.1:8000/community/upload/
-            ">✏️</a>
-            
+            <a class="edit-icon" href="{% url 'create_post' %}">✏️</a>
             <div class="menu" onclick="toggleMenu()">≡</div>
         </div>
         <div class="menu-items" id="menuItems">
             <div class="menu-item">
                 <img src="{% static 'community/home.png' %}" alt="ホーム">
-                <a href="http://127.0.0.1:8000/community/">ホーム</a>
+                <a href="{% url 'home' %}">ホーム</a>
             </div>
             <div class="menu-item">
                 <img src="{% static 'community/videoicon.png' %}" alt="製作動画">
-                <a href="http://127.0.0.1:8000/community/videos/">製作動画</a>
+                <a href="{% url 'video_list' %}">製作動画</a>
             </div>
             <div class="menu-item">
                 <img src="{% static 'community/toukouicon.png' %}" alt="投稿">
-                <a href="http://127.0.0.1:8000/community/hiroba/">投稿</a>
+                <a href="{% url 'hiroba' %}">投稿</a>
             </div>
             <div class="menu-item">
                 <img src="{% static 'community/usericon.png' %}" alt="ユーザー">
-                <a href="http://127.0.0.1:8000/community/user_profile/">ユーザー</a>
+                <a href="{% url 'user_profile' %}">ユーザー</a>
             </div>
         </div>
     </div>
@@ -252,6 +258,17 @@
     <script>
     function toggleHeart(element) {
         element.classList.toggle('active');
+    }
+    
+    function toggleDescription(button) {
+        const fullDescription = button.nextElementSibling;
+        if (fullDescription.style.display === "none") {
+            fullDescription.style.display = "block";
+            button.textContent = "収納";
+        } else {
+            fullDescription.style.display = "none";
+            button.textContent = "展開";
+        }
     }
 
     function toggleMenu() {
@@ -266,7 +283,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')  // DjangoのCSRFトークン
+                    'X-CSRFToken': getCookie('csrftoken')
                 },
                 body: JSON.stringify({ comment: comment })
             })
@@ -293,60 +310,5 @@
         }
         return cookieValue;
     }
-
-    function uploadImage(event, imgElement) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                imgElement.src = e.target.result;
-            }
-            reader.readAsDataURL(file);
-        }
-    }
-
-    document.querySelectorAll('.post-image').forEach(postImage => {
-        const imgElement = postImage.querySelector('img');
-        const inputElement = document.createElement('input');
-        inputElement.type = 'file';
-        inputElement.accept = 'image/*';
-        inputElement.style.display = 'none';
-        inputElement.addEventListener('change', (event) => uploadImage(event, imgElement));
-        postImage.appendChild(inputElement);
-        postImage.addEventListener('click', () => inputElement.click());
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        fetch('/get_posts/')
-            .then(response => response.json())
-            .then(posts => {
-                const content = document.querySelector('.content');
-                content.innerHTML = ''; // 既存の投稿をクリアする
-                posts.forEach(post => {
-                    const postElement = document.createElement('div');
-                    postElement.classList.add('post');
-                    postElement.innerHTML = `
-                        <div class="post-header">
-                            <div class="user-info">
-                                <div class="user-icon"></div>
-                                <span>${post.user}</span>
-                            </div>
-                            <button class="heart-btn" onclick="toggleHeart(this)">❤</button>
-                        </div>
-                        <div class="post-image">
-                            <img src="${post.image_url}" alt="Post Image" class="post-img">
-                        </div>
-                        <div class="post-description">${post.description}</div>
-                        <div class="post-comment">
-                            <input type="text" placeholder="ここにコメント" onchange="saveComment(this)">
-                        </div>
-                    `;
-                    content.appendChild(postElement);
-                });
-            })
-            .catch(error => console.error('エラー:', error));
-    });
     </script>
-    
 </body>
-</html>

@@ -12,7 +12,7 @@
             background-color: #F9F9F9;
         }
         header {
-            background-color: white;
+            background-color: rgb(65, 157, 242);
             padding: 10px 20px;
             display: flex;
             align-items: center;
@@ -21,7 +21,7 @@
             text-align: center;
         }
         .logo {
-            color: red;
+            color: rgb(165, 9, 9);
             font-size: 24px;
             font-weight: bold;
         }
@@ -127,11 +127,9 @@
             <div class="video-info">
                 <a class="video-title" href="{% url 'productvideo' %}?video_id={{ video.id }}">{{ video.title }}</a>
                 <div class="video-views">{{ video.description }}</div>
-                <p class="video-views">難易度:☆</p>
+                <p class="video-views">難易度: {{ video.stars }}</p> <!-- ここでstarsを表示 -->
             </div>
         </div>
-        
-        
         {% endfor %}
     </div>
     <div class="menu" onclick="toggleMenu()" aria-label="メニュー">≡</div>

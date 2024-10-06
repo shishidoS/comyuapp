@@ -128,3 +128,5 @@ SESSION_COOKIE_SECURE = not DEBUG
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 LOGIN_REDIRECT_URL = '/community/'  # ログイン後のリダイレクト先
 LOGIN_URL = '/'  # ログインが必要な場合のリダイレクト先
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
